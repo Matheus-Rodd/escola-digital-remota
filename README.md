@@ -1,73 +1,116 @@
-# Welcome to your Lovable project
+# Sistema Escolar Digital - Professores de Áreas Remotas
 
-## Project info
+Um sistema web moderno e intuitivo desenvolvido especialmente para professores de escolas em áreas remotas do Brasil, focado na organização de turmas e atividades escolares.
 
-**URL**: https://lovable.dev/projects/8d6f3584-e87c-4efc-be4d-45cd1af5798b
+## 🎯 Objetivos
 
-## How can I edit this code?
+- Facilitar a organização de turmas e atividades escolares
+- Interface simples e clara para uso em regiões com pouca infraestrutura tecnológica
+- Design responsivo que funciona bem em tablets e desktops
+- Experiência de usuário otimizada para professores
 
-There are several ways of editing your application.
+## ✨ Funcionalidades
 
-**Use Lovable**
+### Autenticação
+- **Login Simples**: Interface de login rápida e intuitiva
+- **Validação**: Sistema de validação de credenciais
+- **Persistência**: Sessão mantida localmente
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/8d6f3584-e87c-4efc-be4d-45cd1af5798b) and start prompting.
+### Dashboard Principal
+- **Visão Geral**: Cards com estatísticas das turmas e atividades
+- **Acesso Rápido**: Botões para ações principais
+- **Interface Limpa**: Design minimalista inspirado em ferramentas modernas
 
-Changes made via Lovable will be committed automatically to this repo.
+### Gerenciamento de Turmas
+- **Criar Turmas**: Formulário simples com campos essenciais
+- **Personalização**: Sistema de cores para identificação visual
+- **Visualização**: Cards organizados com informações relevantes
 
-**Use your preferred IDE**
+### Gerenciamento de Atividades
+- **Cadastro Rápido**: Interface otimizada para criação de atividades
+- **Organização**: Atividades organizadas por turma e data
+- **Calendário**: Sistema de datas com validação
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## 🎨 Design System
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Cores
+- **Primária**: Azul sereno (`214, 88%, 52%`) - Transmite confiança e organização
+- **Secundária**: Verde suave (`154, 59%, 46%`) - Ações positivas e sucesso
+- **Accent**: Azul claro (`210, 100%, 96%`) - Destaque sutil
+- **Background**: Gradientes suaves para reduzir cansaço visual
 
-Follow these steps:
+### Tipografia
+- **Fonte**: Inter - Escolhida pela alta legibilidade
+- **Pesos**: 300-700 para hierarquia visual clara
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Animações
+- **Microinterações**: Transições suaves para feedback visual
+- **Performance**: Animações otimizadas para dispositivos limitados
+- **Acessibilidade**: Respeitam preferências de movimento reduzido
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## 🚀 Tecnologias
 
-# Step 3: Install the necessary dependencies.
-npm i
+- **React 18** - Framework principal
+- **TypeScript** - Tipagem estática
+- **Tailwind CSS** - Estilização utilitária
+- **Shadcn/ui** - Componentes base
+- **React Router** - Navegação
+- **Lucide React** - Ícones modernos
+- **Vite** - Build tool otimizada
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+## 📱 Responsividade
 
-**Edit a file directly in GitHub**
+- **Desktop First**: Otimizado para uso em computadores
+- **Tablet Friendly**: Interface adaptada para tablets
+- **Touch Optimized**: Elementos com tamanho adequado para toque
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🔧 Como Usar
 
-**Use GitHub Codespaces**
+### Para Professores
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+1. **Login**: Acesse com suas credenciais
+2. **Dashboard**: Visualize o resumo de suas turmas
+3. **Criar Turma**: Clique em "Nova Turma" e preencha os dados
+4. **Adicionar Atividades**: Selecione "Nova Atividade" e escolha a turma
+5. **Organizar**: Use as cores das turmas para organização visual
 
-## What technologies are used for this project?
+### Credenciais de Teste
+- **Email**: professor@escola.com
+- **Senha**: qualquer senha
 
-This project is built with:
+## 💡 Filosofia de Design
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Minimalismo Funcional
+- Evita sobrecarga de informações
+- Foca no essencial para o dia a dia do professor
+- Interface limpa que reduz distrações
 
-## How can I deploy this project?
+### Acessibilidade
+- Contraste adequado para diferentes condições de luz
+- Elementos com tamanho touch-friendly
+- Feedback visual claro para todas as ações
 
-Simply open [Lovable](https://lovable.dev/projects/8d6f3584-e87c-4efc-be4d-45cd1af5798b) and click on Share -> Publish.
+### Performance
+- Carregamento rápido mesmo em conexões lentas
+- Otimizações para dispositivos com recursos limitados
+- Uso eficiente de dados
 
-## Can I connect a custom domain to my Lovable project?
+## 🎯 Próximas Funcionalidades
 
-Yes, you can!
+- Sistema de notas e avaliações
+- Relatórios de desempenho
+- Comunicação com pais/responsáveis
+- Backup automático dos dados
+- Modo offline
+- Integração com impressoras
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 📊 Métricas de Sucesso
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+- Redução do tempo gasto em organização administrativa
+- Aumento da satisfação dos professores
+- Melhoria na organização das atividades escolares
+- Facilidade de uso comprovada por feedback
+
+---
+
+**Desenvolvido com ❤️ para educadores brasileiros**
