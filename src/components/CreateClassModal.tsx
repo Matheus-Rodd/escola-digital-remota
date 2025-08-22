@@ -1,81 +1,62 @@
-import { useState } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Users, BookOpen } from "lucide-react";
+import React, { useState } from 'react';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { BookOpen, Users } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface CreateClassModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (classData: {
+  onCreateClass: (classData: {
     name: string;
+    description: string;
+    students_count: number;
+    subject: string;
     grade: string;
-    studentsCount: number;
-    color: string;
   }) => void;
 }
 
-const grades = [
-  "1º Ano",
-  "2º Ano", 
-  "3º Ano",
-  "4º Ano",
-  "5º Ano",
-  "6º Ano",
-  "7º Ano",
-  "8º Ano",
-  "9º Ano"
-];
-
-const colors = [
-  { name: "Azul", value: "bg-gradient-primary" },
-  { name: "Verde", value: "bg-gradient-secondary" },
-  { name: "Roxo", value: "bg-gradient-to-r from-purple-500 to-purple-600" },
-  { name: "Laranja", value: "bg-gradient-to-r from-orange-500 to-orange-600" },
-  { name: "Rosa", value: "bg-gradient-to-r from-pink-500 to-pink-600" },
-  { name: "Índigo", value: "bg-gradient-to-r from-indigo-500 to-indigo-600" }
-];
-
-const CreateClassModal = ({ isOpen, onClose, onSubmit }: CreateClassModalProps) => {
-  const [formData, setFormData] = useState({
-    name: "",
-    grade: "",
-    studentsCount: "",
-    color: "bg-gradient-primary"
-  });
+export function CreateClassModal({ isOpen, onClose, onCreateClass }: CreateClassModalProps) {
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [students, setStudents] = useState('');
+  const [subject, setSubject] = useState('');
+  const [grade, setGrade] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.name || !formData.grade || !formData.studentsCount) {
+    if (!name.trim() || !subject.trim() || !students.trim() || !grade.trim()) {
+      toast.error('Por favor, preencha todos os campos obrigatórios');
       return;
     }
 
-    onSubmit({
-      name: formData.name,
-      grade: formData.grade,
-      studentsCount: parseInt(formData.studentsCount),
-      color: formData.color
+    onCreateClass({
+      name: name.trim(),
+      description: description.trim(),
+      students_count: parseInt(students),
+      subject: subject.trim(),
+      grade: grade.trim()
     });
 
-    // Reset form
-    setFormData({
-      name: "",
-      grade: "",
-      studentsCount: "",
-      color: "bg-gradient-primary"
-    });
+    // Limpar formulário
+    setName('');
+    setDescription('');
+    setStudents('');
+    setSubject('');
+    setGrade('');
+    onClose();
   };
 
   const handleClose = () => {
-    setFormData({
-      name: "",
-      grade: "",
-      studentsCount: "",
-      color: "bg-gradient-primary"
-    });
+    setName('');
+    setDescription('');
+    setStudents('');
+    setSubject('');
+    setGrade('');
     onClose();
   };
 
@@ -84,8 +65,8 @@ const CreateClassModal = ({ isOpen, onClose, onSubmit }: CreateClassModalProps) 
       <DialogContent className="sm:max-w-md gradient-card border-0 shadow-large">
         <DialogHeader>
           <div className="flex items-center space-x-3 mb-2">
-            <div className="w-10 h-10 bg-gradient-primary rounded-full flex items-center justify-center">
-              <Users className="h-5 w-5 text-primary-foreground" />
+            <div className="w-10 h-10 gradient-primary rounded-lg flex items-center justify-center">
+              <BookOpen className="w-5 h-5 text-white" />
             </div>
             <div>
               <DialogTitle className="text-xl font-semibold text-foreground">
@@ -98,87 +79,86 @@ const CreateClassModal = ({ isOpen, onClose, onSubmit }: CreateClassModalProps) 
           </div>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="name" className="text-sm font-medium">
-                Nome da Turma
+                Nome da Turma *
               </Label>
               <Input
                 id="name"
-                placeholder="Ex: 5º Ano A"
-                value={formData.name}
-                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                className="transition-smooth focus:shadow-glow"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 required
+                className="transition-smooth focus:shadow-glow"
+                placeholder="Ex: 5º Ano A"
               />
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="subject" className="text-sm font-medium">
+                Matéria *
+              </Label>
+              <Input
+                id="subject"
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+                required
+                className="transition-smooth focus:shadow-glow"
+                placeholder="Ex: Matemática"
+              />
+            </div>
+          </div>
 
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="students" className="text-sm font-medium">
+                Nº de Alunos *
+              </Label>
+              <div className="relative">
+                <Users className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="students"
+                  type="number"
+                  value={students}
+                  onChange={(e) => setStudents(e.target.value)}
+                  required
+                  min="1"
+                  max="50"
+                  className="pl-10 transition-smooth focus:shadow-glow"
+                  placeholder="25"
+                />
+              </div>
+            </div>
+            
             <div className="space-y-2">
               <Label htmlFor="grade" className="text-sm font-medium">
-                Série
+                Série/Ano *
               </Label>
-              <Select value={formData.grade} onValueChange={(value) => setFormData(prev => ({ ...prev, grade: value }))}>
-                <SelectTrigger className="transition-smooth focus:shadow-glow">
-                  <SelectValue placeholder="Selecione a série" />
-                </SelectTrigger>
-                <SelectContent>
-                  {grades.map((grade) => (
-                    <SelectItem key={grade} value={grade}>
-                      {grade}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="studentsCount" className="text-sm font-medium">
-              Número de Alunos
-            </Label>
-            <div className="relative">
-              <Users className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                id="studentsCount"
-                type="number"
-                placeholder="0"
-                min="1"
-                max="50"
-                value={formData.studentsCount}
-                onChange={(e) => setFormData(prev => ({ ...prev, studentsCount: e.target.value }))}
-                className="pl-10 transition-smooth focus:shadow-glow"
+                id="grade"
+                value={grade}
+                onChange={(e) => setGrade(e.target.value)}
                 required
+                className="transition-smooth focus:shadow-glow"
+                placeholder="Ex: 5º Ano, 1ª Série"
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label className="text-sm font-medium">
-              Cor da Turma
+            <Label htmlFor="description" className="text-sm font-medium">
+              Descrição
             </Label>
-            <div className="grid grid-cols-3 gap-3">
-              {colors.map((color) => (
-                <button
-                  key={color.value}
-                  type="button"
-                  onClick={() => setFormData(prev => ({ ...prev, color: color.value }))}
-                  className={`
-                    relative p-3 rounded-lg border-2 transition-smooth
-                    ${formData.color === color.value 
-                      ? 'border-primary shadow-glow' 
-                      : 'border-border hover:border-primary/50'
-                    }
-                  `}
-                >
-                  <div className={`w-full h-6 rounded ${color.value} mb-2`}></div>
-                  <p className="text-xs text-muted-foreground">{color.name}</p>
-                </button>
-              ))}
-            </div>
+            <Textarea
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="min-h-[80px] transition-smooth focus:shadow-glow"
+              placeholder="Descrição da turma (opcional)"
+            />
           </div>
 
-          <DialogFooter className="space-x-2">
+          <DialogFooter className="flex gap-2">
             <Button
               type="button"
               variant="outline"
@@ -189,9 +169,9 @@ const CreateClassModal = ({ isOpen, onClose, onSubmit }: CreateClassModalProps) 
             </Button>
             <Button
               type="submit"
-              className="bg-gradient-primary hover:shadow-glow transition-smooth"
+              className="gradient-primary text-white transition-smooth hover:shadow-glow"
             >
-              <BookOpen className="h-4 w-4 mr-2" />
+              <BookOpen className="w-4 h-4 mr-2" />
               Criar Turma
             </Button>
           </DialogFooter>
@@ -200,5 +180,3 @@ const CreateClassModal = ({ isOpen, onClose, onSubmit }: CreateClassModalProps) 
     </Dialog>
   );
 };
-
-export default CreateClassModal;

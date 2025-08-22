@@ -1,44 +1,59 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { GraduationCap, Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import heroImage from "@/assets/hero-education.jpg";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { GraduationCap, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { toast } from 'sonner';
+import { useAuth } from '@/contexts/AuthContext';
+import heroImage from '@/assets/hero-education.jpg';
 
-const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+export default function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const { signIn, signUp, user } = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setLoading(true);
 
-    // Simulação de autenticação
-    setTimeout(() => {
-      if (email && password) {
-        localStorage.setItem("isAuthenticated", "true");
-        localStorage.setItem("userEmail", email);
-        toast({
-          title: "Login realizado com sucesso!",
-          description: "Bem-vindo ao sistema escolar.",
-        });
-        navigate("/dashboard");
-      } else {
-        toast({
-          title: "Erro no login",
-          description: "Por favor, preencha todos os campos.",
-          variant: "destructive",
-        });
-      }
-      setIsLoading(false);
-    }, 1000);
+    const { error } = await signIn(email, password);
+    
+    if (error) {
+      toast.error('Erro ao fazer login: ' + error.message);
+    } else {
+      toast.success('Login realizado com sucesso!');
+      navigate('/dashboard');
+    }
+    
+    setLoading(false);
+  };
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const { error } = await signUp(email, password, fullName);
+    
+    if (error) {
+      toast.error('Erro ao criar conta: ' + error.message);
+    } else {
+      toast.success('Conta criada com sucesso! Verifique seu email para confirmar.');
+    }
+    
+    setLoading(false);
   };
 
   return (
@@ -64,7 +79,7 @@ const Login = () => {
           </div>
         </div>
 
-        {/* Login Form */}
+        {/* Login/Register Form */}
         <div className="animate-slide-up">
           <Card className="shadow-large border-0 gradient-card">
             <CardHeader className="text-center space-y-4">
@@ -72,74 +87,145 @@ const Login = () => {
                 <GraduationCap className="h-8 w-8 text-primary-foreground" />
               </div>
               <CardTitle className="text-2xl font-semibold text-foreground">
-                Entre na sua conta
+                Sistema Escolar
               </CardTitle>
               <CardDescription className="text-muted-foreground">
-                Acesse o sistema para gerenciar suas turmas
+                Acesse sua conta ou crie uma nova
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleLogin} className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="text-sm font-medium">
-                    Email
-                  </Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="professor@escola.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="pl-10 h-12 bg-background border-border transition-smooth focus:shadow-glow"
-                      required
-                    />
-                  </div>
-                </div>
+              <Tabs defaultValue="login" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="login">Entrar</TabsTrigger>
+                  <TabsTrigger value="register">Registrar</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="login">
+                  <form onSubmit={handleLogin} className="space-y-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="login-email" className="text-sm font-medium">
+                        Email
+                      </Label>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          id="login-email"
+                          type="email"
+                          placeholder="professor@escola.com"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className="pl-10 h-12 bg-background border-border transition-smooth focus:shadow-glow"
+                          required
+                        />
+                      </div>
+                    </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="password" className="text-sm font-medium">
-                    Senha
-                  </Label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="password"
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Digite sua senha"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="pl-10 pr-12 h-12 bg-background border-border transition-smooth focus:shadow-glow"
-                      required
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-smooth"
+                    <div className="space-y-2">
+                      <Label htmlFor="login-password" className="text-sm font-medium">
+                        Senha
+                      </Label>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          id="login-password"
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Digite sua senha"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className="pl-10 pr-12 h-12 bg-background border-border transition-smooth focus:shadow-glow"
+                          required
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-smooth"
+                        >
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                      </div>
+                    </div>
+
+                    <Button 
+                      type="submit" 
+                      className="w-full h-12 bg-gradient-primary hover:shadow-glow transition-smooth text-base font-medium"
+                      disabled={loading}
                     >
-                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </button>
-                  </div>
-                </div>
+                      {loading ? "Entrando..." : "Entrar"}
+                    </Button>
+                  </form>
+                </TabsContent>
 
-                <Button 
-                  type="submit" 
-                  className="w-full h-12 bg-gradient-primary hover:shadow-glow transition-smooth text-base font-medium"
-                  disabled={isLoading}
-                >
-                  {isLoading ? "Entrando..." : "Entrar"}
-                </Button>
-              </form>
+                <TabsContent value="register">
+                  <form onSubmit={handleSignUp} className="space-y-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="register-name" className="text-sm font-medium">
+                        Nome Completo
+                      </Label>
+                      <Input
+                        id="register-name"
+                        type="text"
+                        placeholder="Prof. João Silva"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        className="h-12 bg-background border-border transition-smooth focus:shadow-glow"
+                        required
+                      />
+                    </div>
 
-              <div className="mt-6 text-center">
-                <p className="text-sm text-muted-foreground">
-                  Primeira vez aqui?{" "}
-                  <button className="text-primary hover:text-primary-glow font-medium transition-smooth">
-                    Fale com o administrador
-                  </button>
-                </p>
-              </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="register-email" className="text-sm font-medium">
+                        Email
+                      </Label>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          id="register-email"
+                          type="email"
+                          placeholder="professor@escola.com"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className="pl-10 h-12 bg-background border-border transition-smooth focus:shadow-glow"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="register-password" className="text-sm font-medium">
+                        Senha
+                      </Label>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          id="register-password"
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Mínimo 6 caracteres"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className="pl-10 pr-12 h-12 bg-background border-border transition-smooth focus:shadow-glow"
+                          required
+                          minLength={6}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-smooth"
+                        >
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                      </div>
+                    </div>
+
+                    <Button 
+                      type="submit" 
+                      className="w-full h-12 bg-gradient-secondary hover:shadow-glow transition-smooth text-base font-medium"
+                      disabled={loading}
+                    >
+                      {loading ? "Criando conta..." : "Criar Conta"}
+                    </Button>
+                  </form>
+                </TabsContent>
+              </Tabs>
             </CardContent>
           </Card>
         </div>
@@ -147,5 +233,3 @@ const Login = () => {
     </div>
   );
 };
-
-export default Login;
